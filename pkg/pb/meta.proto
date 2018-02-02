@@ -1,0 +1,52 @@
+syntax = "proto2";
+package pb;
+
+import "gogoproto/gogo.proto";
+
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.goproto_enum_prefix_all) = false;
+
+enum MessageType {
+    MsgPut       = 0;
+    MsgPutRsp    = 1;
+    MsgAccess    = 2;
+    MsgAccessRsp = 3;
+}
+
+enum LimitStrategy {
+    LimitWait   = 0;
+    LimitReject = 1;
+}
+
+message Resource {
+    optional uint64        id       = 1 [(gogoproto.nullable) = false, (gogoproto.customname) = "ID"];
+    optional uint64        burst    = 2 [(gogoproto.nullable) = false];
+    optional LimitStrategy strategy = 3 [(gogoproto.nullable) = false];
+}
+
+message Header {
+    optional bytes  id   = 1 [(gogoproto.customname) = "ID"];
+    optional uint64 from = 2 [(gogoproto.nullable) = false];
+}
+
+message Put {
+    optional Header   header   = 1 [(gogoproto.nullable) = false];
+    optional Resource resource = 2 [(gogoproto.nullable) = false];
+}
+
+message PutRsp {
+    optional Header   header = 1 [(gogoproto.nullable) = false];
+    optional uint64   id     = 2 [(gogoproto.nullable) = false, (gogoproto.customname) = "ID"];
+}
+
+message Access {
+    optional Header   header = 1 [(gogoproto.nullable) = false];
+    optional uint64   id     = 2 [(gogoproto.nullable) = false, (gogoproto.customname) = "ID"];
+}
+
+message AccessRsp {
+    optional Header header = 1 [(gogoproto.nullable) = false];
+    optional bool   reject = 2 [(gogoproto.nullable) = false];
+}
